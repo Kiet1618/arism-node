@@ -13,7 +13,7 @@ export const encrypt = (
 	publicKeyTo: Buffer,
 	msg: Buffer,
 	opts?: Crypto.Ecies | undefined
-): Promise<Crypto.EncryptedData> => {
+): Promise<Crypto.Ecies> => {
 	return Crypto.encrypt(publicKeyTo, msg, opts)
 }
 
