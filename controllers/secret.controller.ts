@@ -6,9 +6,9 @@ import {
 	UseGuards,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { VerifyGuard } from '@verifier/verify.guard'
 import { FindMasterShareDto, MasterShareDto } from '@dtos'
 import { CommitmentService, SecretService, WalletService } from '@services'
-import { VerifyGuard } from '@verifier/verify.guard'
 import { C, EC, H } from '@common'
 
 @Controller('shared-keys')

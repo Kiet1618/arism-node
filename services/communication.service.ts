@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpService } from '@nestjs/axios'
-import { Wallet } from 'schemas'
-import { SecretService } from 'services'
-import { BN, C, EC, N } from 'common'
-import { lagrangeInterpolation } from 'libs/arithmetic'
+import { Wallet } from '@schemas'
+import { SecretService } from '@services'
+import { BN, C, EC, N } from '@common'
+import { lagrangeInterpolation } from '@libs/arithmetic'
 
 @Injectable()
 export class CommunicationService implements OnModuleInit {

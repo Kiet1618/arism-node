@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator'
-import { Date } from 'mongoose'
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateCommitmentDto {
 	@IsNotEmpty()

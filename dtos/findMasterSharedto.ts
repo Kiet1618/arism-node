@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator'
-import { CommitmentDto } from './commitment.dto'
+import { IsNotEmpty } from 'class-validator'
+import { CommitmentDto } from '@dtos'
 
 export class FindMasterShareDto {
 	@IsNotEmpty()

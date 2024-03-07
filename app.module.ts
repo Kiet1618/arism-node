@@ -3,9 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { HttpModule } from '@nestjs/axios'
 
-import configuration from 'config'
-import * as controllers from 'controllers'
-import * as services from 'services'
+import { GoogleVerifier } from '@verifier/google.verifier'
+
+import configuration from '@config'
+import * as controllers from '@controllers'
+import * as services from '@services'
 import {
 	Commitment,
 	CommitmentSchema,
@@ -13,8 +15,7 @@ import {
 	SecretSchema,
 	Wallet,
 	WalletSchema,
-} from 'schemas'
-import { GoogleVerifier } from 'verifier/google.verifier'
+} from '@schemas'
 
 @Module({
 	imports: [
