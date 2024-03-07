@@ -1,2 +1,3 @@
 export * from './wallet.schema'
-export * from './sharedKey.schema'
+export * from './secret.schema'
+export * from './commitment.schema'

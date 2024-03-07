@@ -6,7 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { HttpService } from '@nestjs/axios'
 import { Wallet } from 'schemas'
-import { SharedKeyService } from 'services'
+import { SecretService } from 'services'
 import { BN, C, EC, N } from 'common'
 import { lagrangeInterpolation } from 'libs/arithmetic'
 
@@ -17,8 +17,8 @@ export class CommunicationService implements OnModuleInit {
 
 	constructor(
 		private readonly httpService: HttpService,
-		private configService: ConfigService,
-		private sharedKeyService: SharedKeyService
+		private readonly configService: ConfigService,
+		private readonly secretService: SecretService
 	) {}
 
 	onModuleInit() {
@@ -131,15 +131,15 @@ export class CommunicationService implements OnModuleInit {
 		return { address, owner, publicKey: masterPublicKey }
 	}
 
-	async generateShares(owner: string): Promise<boolean> {
-		const sharedKey = await this.sharedKeyService.find(owner)
-		const secret = sharedKey.secret
-		const shares = [BN.from(secret, 'hex')]
+	async getGeneratedShares(owner: string): Promise<boolean> {
+		const nodeSecret = await this.secretService.find(owner)
 
-		const indices: BN[] = [BN.ZERO]
+		const secret = nodeSecret.secret
+		const generatedShares = [BN.from(secret, 'hex')]
+		const xValues: BN[] = [BN.ZERO]
 
 		for (let nodeIndex = 0; nodeIndex < this.nodeUrls.length; nodeIndex++) {
-			if (shares.length < N.LAGRANGE_THRESHOLD) {
+			if (generatedShares.length < N.LAGRANGE_THRESHOLD) {
 				const randomShare: BN = EC.secp256k1.genKeyPair().getPrivate()
 				const receivedShare = randomShare.toString('hex')
 
@@ -154,12 +154,12 @@ export class CommunicationService implements OnModuleInit {
 					)
 					.toPromise()
 
-				shares.push(randomShare)
-				indices.push(BN.from(nodeIndex).add(BN.ONE))
+				generatedShares.push(randomShare)
+				xValues.push(BN.from(nodeIndex).add(BN.ONE))
 			} else {
 				const point = lagrangeInterpolation(
-					shares,
-					indices,
+					generatedShares,
+					xValues,
 					BN.from(nodeIndex).add(BN.ONE)
 				)
 

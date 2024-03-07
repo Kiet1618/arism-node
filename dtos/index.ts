@@ -1,1 +1,5 @@
 export * from './findWallet.dto'
+export * from './findMasterSharedto'
+export * from './createCommitment.dto'
+export * from './commitment.dto'
+export * from './masterShare.dto'

@@ -6,7 +6,14 @@ import { HttpModule } from '@nestjs/axios'
 import configuration from 'config'
 import * as controllers from 'controllers'
 import * as services from 'services'
-import { SharedKey, SharedKeySchema, Wallet, WalletSchema } from 'schemas'
+import {
+	Commitment,
+	CommitmentSchema,
+	Secret,
+	SecretSchema,
+	Wallet,
+	WalletSchema,
+} from 'schemas'
 import { GoogleVerifier } from 'verifier/google.verifier'
 
 @Module({
@@ -25,8 +32,9 @@ import { GoogleVerifier } from 'verifier/google.verifier'
 			inject: [ConfigService],
 		}),
 		MongooseModule.forFeature([
+			{ name: Commitment.name, schema: CommitmentSchema },
 			{ name: Wallet.name, schema: WalletSchema },
-			{ name: SharedKey.name, schema: SharedKeySchema },
+			{ name: Secret.name, schema: SecretSchema },
 		]),
 		ConfigModule,
 	],

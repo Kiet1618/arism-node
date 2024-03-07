@@ -9,6 +9,14 @@ export const decrypt = (
 	return Crypto.decrypt(privateKey, opts)
 }
 
+export const encrypt = (
+	publicKeyTo: Buffer,
+	msg: Buffer,
+	opts?: Crypto.Ecies | undefined
+): Promise<Crypto.EncryptedData> => {
+	return Crypto.encrypt(publicKeyTo, msg, opts)
+}
+
 export const getPublicKey = (privateKey: Buffer): Buffer => {
 	return Crypto.getPublic(privateKey)
 }

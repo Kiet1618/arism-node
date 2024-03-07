@@ -83,3 +83,12 @@ export const lagrangeInterpolation = (
 
 	return secret.umod(EC.ORDER)
 }
+
+export const sumMod = (arr: string[], modulo: BN): string => {
+	return arr
+		.reduce(
+			(acc, current) => acc.add(BN.from(current, 'hex')).umod(modulo),
+			BN.ZERO
+		)
+		.toString('hex')
+}
