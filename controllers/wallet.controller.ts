@@ -1,10 +1,9 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
 import { VerifyGuard } from '@verifier/verify.guard'
-import { FindWalletDto } from '@dtos'
 import { Wallet } from '@schemas'
 import { CommunicationService, WalletService } from '@services'
 
-@Controller('wallets')
+@Controller('wallet')
 export class WalletController {
 	constructor(
 		private readonly walletService: WalletService,
@@ -12,23 +11,16 @@ export class WalletController {
 	) {}
 
 	@Post()
-	async lookupWallet(@Body() lookupWalletDto: FindWalletDto): Promise<any> {
-		const existedWallet = await this.walletService.find(
-			lookupWalletDto.owner
-		)
+	async lookupWallet(@Body() data: { owner: string }): Promise<Wallet> {
+		const existedWallet = await this.walletService.find(data.owner)
 		if (existedWallet) {
 			return existedWallet
 		}
 
 		const { publicKey, address } =
-			await this.communicationService.generateSharedSecret(
-				lookupWalletDto.owner
-			)
-		return this.walletService.create(
-			lookupWalletDto.owner,
-			publicKey,
-			address
-		)
+			await this.communicationService.generateSharedSecret(data.owner)
+
+		return this.walletService.create(data.owner, publicKey, address)
 	}
 
 	@Get()

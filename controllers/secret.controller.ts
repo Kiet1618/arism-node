@@ -11,7 +11,7 @@ import { FindMasterShareDto, MasterShareDto } from '@dtos'
 import { CommitmentService, SecretService, WalletService } from '@services'
 import { C, EC, H } from '@common'
 
-@Controller('shared-keys')
+@Controller('secret')
 export class SecretController {
 	constructor(
 		private readonly secretService: SecretService,

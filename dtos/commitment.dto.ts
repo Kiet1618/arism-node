@@ -1,11 +1,7 @@
 export class CommitmentDto {
-	data: string
-	signature: string
-	publicKey: string
+	readonly data: string
 
-	constructor(data: string, signature: string, publicKey: string) {
-		this.data = data
-		this.signature = signature
-		this.publicKey = publicKey
-	}
+	readonly signature: string
+
+	readonly publicKey: string
 }

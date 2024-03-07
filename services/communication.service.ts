@@ -3,38 +3,28 @@ import {
 	InternalServerErrorException,
 	OnModuleInit,
 } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { HttpService } from '@nestjs/axios'
 import { Wallet } from '@schemas'
 import { SecretService } from '@services'
 import { BN, C, EC, N } from '@common'
 import { lagrangeInterpolation } from '@libs/arithmetic'
+import { catchError, firstValueFrom, last, lastValueFrom } from 'rxjs'
 
 @Injectable()
 export class CommunicationService implements OnModuleInit {
-	private currentUrl: string
-	private nodeUrls: [string]
+	private nodeUrls: string[]
 
 	constructor(
 		private readonly httpService: HttpService,
-		private readonly configService: ConfigService,
 		private readonly secretService: SecretService
 	) {}
 
 	onModuleInit() {
-		this.nodeUrls = ['12']
-		this.currentUrl = this.configService.get<string>('url').trim()
-	}
-
-	async broadcast() {
-		this.nodeUrls.map(async (url) => {
-			if (this.currentUrl !== url) {
-				await this.httpService.axiosRef.post(
-					`${this[url]}/communication/broadcast-assign-key`,
-					{ id: 1 }
-				)
-			}
-		})
+		this.nodeUrls = [
+			'http://127.0.0.1:3001',
+			'http://127.0.0.1:3002',
+			'http://127.0.0.1:3003',
+		]
 	}
 
 	async generateSharedSecret(owner: string): Promise<Wallet> {
@@ -42,56 +32,58 @@ export class CommunicationService implements OnModuleInit {
 
 		// Step 1: Initialize secrets
 		for (const nodeUrl of this.nodeUrls) {
-			try {
-				const { publicKey } = await this.httpService
-					.post(`${this[nodeUrl]}/communication/init-secret`, {
+			const { publicKey } = await firstValueFrom(
+				this.httpService
+					.post(`${nodeUrl}/communication/initialize-secret`, {
 						owner,
 					})
-					.toPromise()
-					.then((res) => res.data)
+					.pipe(
+						catchError((error: any) => {
+							console.error(error.message)
+							throw new InternalServerErrorException(
+								`Error when initialize-secret in ${nodeUrl}`
+							)
+						})
+					)
+			).then((res) => res.data)
 
-				groupPublicKeys.push(publicKey)
-			} catch (error: any) {
-				console.error(error.message)
-				throw new InternalServerErrorException(
-					`Error when initSecret in ${nodeUrl}`
-				)
-			}
+			groupPublicKeys.push(publicKey)
 		}
 
 		// Step 2: Get shares
 		for (const nodeUrl of this.nodeUrls) {
-			try {
-				await this.httpService
-					.post(`${this[nodeUrl]}/communication/generate-shares`, {
+			await firstValueFrom(
+				this.httpService
+					.post(`${nodeUrl}/communication/generate-shares`, {
 						owner,
 					})
-					.toPromise()
-			} catch (error: any) {
-				console.error(error.message)
-				throw new InternalServerErrorException(
-					`Error when generateShares in ${nodeUrl}`
-				)
-			}
+					.pipe(
+						catchError((error: any) => {
+							console.error(error.message)
+							throw new InternalServerErrorException(
+								`Error when generate-shares in ${nodeUrl}`
+							)
+						})
+					)
+			)
 		}
 
 		// Step 3: Derive shared secret key
 		for (const nodeUrl of this.nodeUrls) {
-			try {
-				await this.httpService
-					.post(
-						`${this[nodeUrl]}/communication/derive-shared-secret`,
-						{
-							owner,
-						}
+			await firstValueFrom(
+				this.httpService
+					.post(`${nodeUrl}/communication/derive-master-share`, {
+						owner,
+					})
+					.pipe(
+						catchError((error: any) => {
+							console.error(error.message)
+							throw new InternalServerErrorException(
+								`Error when derive-master-share in ${nodeUrl}`
+							)
+						})
 					)
-					.toPromise()
-			} catch (error: any) {
-				console.error(error.message)
-				throw new InternalServerErrorException(
-					`Error when deriveSharedSecret in ${nodeUrl}`
-				)
-			}
+			)
 		}
 
 		// Get temporarily private instead of public
@@ -112,26 +104,28 @@ export class CommunicationService implements OnModuleInit {
 
 		// Step 4: Store wallet information
 		for (const nodeUrl of this.nodeUrls) {
-			try {
-				await this.httpService
-					.post(`${this[nodeUrl]}/communication/store-wallet-info`, {
+			await firstValueFrom(
+				this.httpService
+					.post(`${nodeUrl}/communication/create-wallet`, {
 						address,
 						owner,
 						publicKey: masterPublicKey,
 					})
-					.toPromise()
-			} catch (error: any) {
-				console.error(error.message)
-				throw new InternalServerErrorException(
-					`Error when deriveSharedSecret in ${nodeUrl}`
-				)
-			}
+					.pipe(
+						catchError((error: any) => {
+							console.error(error.message)
+							throw new InternalServerErrorException(
+								`Error when create-wallet in ${nodeUrl}`
+							)
+						})
+					)
+			)
 		}
 
 		return { address, owner, publicKey: masterPublicKey }
 	}
 
-	async getGeneratedShares(owner: string): Promise<boolean> {
+	async generateShares(owner: string): Promise<void> {
 		const nodeSecret = await this.secretService.find(owner)
 
 		const secret = nodeSecret.secret
@@ -143,16 +137,24 @@ export class CommunicationService implements OnModuleInit {
 				const randomShare: BN = EC.secp256k1.genKeyPair().getPrivate()
 				const receivedShare = randomShare.toString('hex')
 
-				// lastValueFrom
-				await this.httpService
-					.post(
-						`${this.nodeUrls[nodeIndex]}/communication/add-received-share`,
-						{
-							owner,
-							receivedShare,
-						}
-					)
-					.toPromise()
+				await lastValueFrom(
+					this.httpService
+						.post(
+							`${this.nodeUrls[nodeIndex]}/communication/receive-share`,
+							{
+								owner,
+								receivedShare,
+							}
+						)
+						.pipe(
+							catchError((error: any) => {
+								console.error(error.message)
+								throw new InternalServerErrorException(
+									`Error when receive-share in ${this.nodeUrls[nodeIndex]}`
+								)
+							})
+						)
+				)
 
 				generatedShares.push(randomShare)
 				xValues.push(BN.from(nodeIndex).add(BN.ONE))
@@ -165,19 +167,25 @@ export class CommunicationService implements OnModuleInit {
 
 				const receivedShare = point.toString('hex')
 
-				// lastValueFrom
-				await this.httpService
-					.post(
-						`${this.nodeUrls[nodeIndex]}/communication/add-received-share`,
-						{
-							owner,
-							receivedShare,
-						}
-					)
-					.toPromise()
+				await lastValueFrom(
+					this.httpService
+						.post(
+							`${this.nodeUrls[nodeIndex]}/communication/receive-share`,
+							{
+								owner,
+								receivedShare,
+							}
+						)
+						.pipe(
+							catchError((error: any) => {
+								console.error(error.message)
+								throw new InternalServerErrorException(
+									`Error when receive-share in ${this.nodeUrls[nodeIndex]}`
+								)
+							})
+						)
+				)
 			}
 		}
-
-		return true
 	}
 }

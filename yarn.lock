@@ -968,7 +968,15 @@
   resolved "https://registry.yarnpkg.com/@types/cookiejar/-/cookiejar-2.1.5.tgz#14a3e83fa641beb169a2dd8422d91c3c345a9a78"
   integrity sha512-he+DHOWReW0nghN24E1WUqM0efK4kI9oTqDm6XmK8ZPe2djZ90BSNdGnIyCLzCPw7/pogPlGbzI2wHGGmi4O/Q==
 
-"@types/elliptic@^6.4.18":
+"@types/eccrypto@^1.1.3":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@types/eccrypto/-/eccrypto-1.1.6.tgz#8069ce3d432246877383e594a993202175866477"
+  integrity sha512-rsmcX5LdDZ3xN2W3al6+YR+XNmiQWlXSwVhsU184QOwNQNJ83YpwvAt8a7cT7y3RpVWkKWmXoIFdanI/z38rNQ==
+  dependencies:
+    "@types/expect" "^1.20.4"
+    "@types/node" "*"
+
+"@types/elliptic@^6.4.14":
   version "6.4.18"
   resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.18.tgz#bc96e26e1ccccbabe8b6f0e409c85898635482e1"
   integrity sha512-UseG6H5vjRiNpQvrhy4VF/JXdA3V/Fp5amvveaL+fs28BZ6xIKJBPnUPRlEaZpysD9MbpfaLi8lbl7PGUAkpWw==
@@ -995,6 +1003,11 @@
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
   integrity sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==
+
+"@types/expect@^1.20.4":
+  version "1.20.4"
+  resolved "https://registry.yarnpkg.com/@types/expect/-/expect-1.20.4.tgz#8288e51737bf7e3ab5d7c77bfa695883745264e5"
+  integrity sha512-Q5Vn3yjTDyCMV50TB6VRIbQNxSE4OmZR86VSbGaNpfUolm0iePBB4KdEEHmxoY5sT2+2DIvXW0rvMDP2nHZ4Mg==
 
 "@types/express-serve-static-core@^4.17.33":
   version "4.17.43"
@@ -2359,6 +2372,13 @@ eccrypto@^1.1.6:
   optionalDependencies:
     secp256k1 "3.7.1"
 
+ecdh@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/ecdh/-/ecdh-0.2.0.tgz#3b1fbb7ae07350c44fcd44077cf8f45d0f3e34e3"
+  integrity sha512-zrWHbiCRBCe0sc/WUZB8pr/kUXnqn82iuKwTYxwVxrEeCbk6Cq+zfGwiKvY9rnLdlgLAeOVz+JjxgGgfT9HTjw==
+  dependencies:
+    jsbn "0.1.0"
+
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
@@ -2382,7 +2402,7 @@ elliptic@6.5.4:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
-elliptic@^6.4.1, elliptic@^6.5.5:
+elliptic@^6.4.1, elliptic@^6.5.4:
   version "6.5.5"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.5.tgz#c715e09f78b6923977610d4c2346d6ce22e6dded"
   integrity sha512-7EjbcmUm17NQFu4Pmgmq2olYMj8nwMnpcddByChSUjArp8F5DQWcIcpriwO4ZToLNAJig0yiyjswfyGNje/ixw==
@@ -3827,6 +3847,11 @@ js-yaml@^4.1.0:
   integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
   dependencies:
     argparse "^2.0.1"
+
+jsbn@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.0.tgz#650987da0dd74f4ebf5a11377a2aa2d273e97dfd"
+  integrity sha512-nSJUKpgMhIK31baMn1+o+ykqan4LBGpeoQguOposJRYzectoBq94PDeRu8wwaJwHMoD7FTGjILdRyWZRuL9pAw==
 
 jsesc@^2.5.1:
   version "2.5.2"
