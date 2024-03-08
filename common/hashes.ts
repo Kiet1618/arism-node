@@ -1,9 +1,6 @@
-import createKeccakHash from 'keccak'
+const keccak = require('keccak')
 
-export function keccak256(a: string | Buffer): string {
-	const hash = createKeccakHash('keccak256')
-		.update(a)
-		.digest()
-		.toString('hex')
+export function keccak256(data: string | Buffer): string {
+	const hash = keccak('keccak256').update(data).digest('hex')
 	return `0x${hash}`
 }

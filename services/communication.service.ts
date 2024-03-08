@@ -32,7 +32,7 @@ export class CommunicationService implements OnModuleInit {
 
 		// Step 1: Initialize secrets
 		for (const nodeUrl of this.nodeUrls) {
-			const { publicKey } = await firstValueFrom(
+			const { data: publicKey } = await firstValueFrom(
 				this.httpService
 					.post(`${nodeUrl}/communication/initialize-secret`, {
 						owner,
@@ -45,7 +45,7 @@ export class CommunicationService implements OnModuleInit {
 							)
 						})
 					)
-			).then((res) => res.data)
+			)
 
 			groupPublicKeys.push(publicKey)
 		}
@@ -97,7 +97,7 @@ export class CommunicationService implements OnModuleInit {
 		}, '0')
 
 		const masterPublicKey = EC.secp256k1
-			.keyFromPrivate(masterPrivateKey!, 'hex')
+			.keyFromPrivate(masterPrivateKey, 'hex')
 			.getPublic('hex')
 
 		const address = C.getAddressFromPublicKey(masterPublicKey)

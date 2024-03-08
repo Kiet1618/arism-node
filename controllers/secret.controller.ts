@@ -42,7 +42,7 @@ export class SecretController {
 			throw new BadRequestException('Wallet have not init yet.')
 		}
 
-		const nodePrivateKey = this.configService.get('private_key') as string
+		const nodePrivateKey = this.configService.get<string>('privateKey')
 		const keyPair = EC.secp256k1.keyFromPrivate(nodePrivateKey)
 		const publicKey = keyPair.getPublic('hex')
 
