@@ -8,7 +8,7 @@ export class WalletController {
 	constructor(
 		private readonly walletService: WalletService,
 		private readonly communicationService: CommunicationService
-	) {}
+	) { }
 
 	@Post()
 	async lookupWallet(@Body() data: { owner: string }): Promise<Wallet> {

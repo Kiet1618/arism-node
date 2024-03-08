@@ -7,7 +7,7 @@ import { HttpService } from '@nestjs/axios'
 import { Wallet } from '@schemas'
 import { SecretService } from '@services'
 import { BN, C, EC, N } from '@common'
-import { lagrangeInterpolation } from '@libs/arithmetic'
+import { lagrangeInterpolation } from '@libs/lagrangeInterpolation'
 import { catchError, firstValueFrom, last, lastValueFrom } from 'rxjs'
 
 @Injectable()
@@ -17,7 +17,7 @@ export class CommunicationService implements OnModuleInit {
 	constructor(
 		private readonly httpService: HttpService,
 		private readonly secretService: SecretService
-	) {}
+	) { }
 
 	onModuleInit() {
 		this.nodeUrls = [
@@ -158,6 +158,7 @@ export class CommunicationService implements OnModuleInit {
 
 				generatedShares.push(randomShare)
 				xValues.push(BN.from(nodeIndex).add(BN.ONE))
+
 			} else {
 				const point = lagrangeInterpolation(
 					generatedShares,
