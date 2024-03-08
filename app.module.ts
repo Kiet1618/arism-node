@@ -42,4 +42,4 @@ import {
 	controllers: [].concat(Object.values(controllers)),
 	providers: [].concat(Object, Object.values(services), GoogleVerifier),
 })
-export class AppModule {}
+export class AppModule { }
