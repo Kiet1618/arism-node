@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
-import { VerifyGuard } from '@verifier/verify.guard'
+import { VerifyGuard } from '@verifiers/verify.guard'
 import { Wallet } from '@schemas'
 import { CommunicationService, WalletService } from '@services'
 

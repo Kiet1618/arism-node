@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { HttpModule } from '@nestjs/axios'
 
-import { GoogleVerifier } from '@verifier/google.verifier'
+import { GoogleVerifier } from '@verifiers/google.verifier'
 
 import configuration from '@config'
 import * as controllers from '@controllers'

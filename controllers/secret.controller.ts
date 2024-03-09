@@ -6,7 +6,7 @@ import {
 	UseGuards,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { VerifyGuard } from '@verifier/verify.guard'
+import { VerifyGuard } from '@verifiers/verify.guard'
 import { FindMasterShareDto, MasterShareDto } from '@dtos'
 import { CommitmentService, SecretService, WalletService } from '@services'
 import { C, EC, H } from '@common'
