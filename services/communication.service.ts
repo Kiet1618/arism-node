@@ -6,27 +6,7 @@ import { BN, C, EC, N, T } from '@common'
 import { lagrangeInterpolation } from '@libs/arithmetic'
 import { post } from '@helpers/httpRequest'
 import { ellipticAddition, encodePublicKey } from '@common/secp256k1'
-
-const NODES: T.Node[] = [
-    {
-        id: 1,
-        url: 'https://arism-node1.azurewebsites.net/',
-        publicKey:
-            '04bc38813a6873e526087918507c78fc3a61624670ee851ecfb4f3bef55d027b5aac4b21229f662a0aefdfdac21cf17c3261a392c74a8790db218b34e3e4c1d56a',
-    },
-    {
-        id: 2,
-        url: 'https://arism-node2.azurewebsites.net/',
-        publicKey:
-            '04b56541684ea5fa40c8337b7688d502f0e9e092098962ad344c34e94f06d293fb759a998cef79d389082f9a75061a29190eec0cac99b8c25ddcf6b58569dad55c',
-    },
-    {
-        id: 3,
-        url: 'https://arism-node3.azurewebsites.net/',
-        publicKey:
-            '044b5f33d7dd84ea0b7a1eb9cdefe33dbcc6822933cfa419c0112e9cbe33e84b267a7813bf1cbc2ee2c6fba506fa5de2af1601a093d93716a78ecec0e3e49f3a57',
-    },
-]
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class CommunicationService implements OnModuleInit {
@@ -34,11 +14,12 @@ export class CommunicationService implements OnModuleInit {
 
     constructor(
         private readonly httpService: HttpService,
-        private readonly secretService: SecretService
+        private readonly secretService: SecretService,
+        private readonly configService: ConfigService
     ) {}
 
     onModuleInit() {
-        this.nodes = NODES
+        this.nodes = this.configService.get<T.Node[]>('nodes')
     }
 
     async generateSharedSecret(owner: string): Promise<Wallet> {
