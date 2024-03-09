@@ -7,30 +7,30 @@ import { lagrangeInterpolation } from '@libs/arithmetic'
 import { post } from '@helpers/httpRequest'
 
 const NODES: T.Node[] = [
-    {
-        id: 1,
-        url: 'http://127.0.0.1:3001',
-        publicKey: {
-            x: 'bc38813a6873e526087918507c78fc3a61624670ee851ecfb4f3bef55d027b5a',
-            y: 'ac4b21229f662a0aefdfdac21cf17c3261a392c74a8790db218b34e3e4c1d56a',
-        },
-    },
-    {
-        id: 2,
-        url: 'http://127.0.0.1:3002',
-        publicKey: {
-            x: 'b56541684ea5fa40c8337b7688d502f0e9e092098962ad344c34e94f06d293fb',
-            y: '759a998cef79d389082f9a75061a29190eec0cac99b8c25ddcf6b58569dad55c',
-        },
-    },
-    {
-        id: 3,
-        url: 'http://127.0.0.1:3003',
-        publicKey: {
-            x: '4b5f33d7dd84ea0b7a1eb9cdefe33dbcc6822933cfa419c0112e9cbe33e84b26',
-            y: '7a7813bf1cbc2ee2c6fba506fa5de2af1601a093d93716a78ecec0e3e49f3a57',
-        },
-    },
+	{
+		id: 1,
+		url: 'http://127.0.0.1:3001',
+		publicKey: {
+			x: 'bc38813a6873e526087918507c78fc3a61624670ee851ecfb4f3bef55d027b5a',
+			y: 'ac4b21229f662a0aefdfdac21cf17c3261a392c74a8790db218b34e3e4c1d56a',
+		},
+	},
+	{
+		id: 2,
+		url: 'http://127.0.0.1:3002',
+		publicKey: {
+			x: 'b56541684ea5fa40c8337b7688d502f0e9e092098962ad344c34e94f06d293fb',
+			y: '759a998cef79d389082f9a75061a29190eec0cac99b8c25ddcf6b58569dad55c',
+		},
+	},
+	{
+		id: 3,
+		url: 'http://127.0.0.1:3003',
+		publicKey: {
+			x: '4b5f33d7dd84ea0b7a1eb9cdefe33dbcc6822933cfa419c0112e9cbe33e84b26',
+			y: '7a7813bf1cbc2ee2c6fba506fa5de2af1601a093d93716a78ecec0e3e49f3a57',
+		},
+	},
 ]
 
 @Injectable()
@@ -40,14 +40,14 @@ export class CommunicationService implements OnModuleInit {
 	constructor(
 		private readonly httpService: HttpService,
 		private readonly secretService: SecretService
-	) {}
+	) { }
 
 	onModuleInit() {
 		this.nodes = NODES
 	}
 
 	async generateSharedSecret(owner: string): Promise<Wallet> {
-		const publicKeys: string[] = []
+		const publicKeys: any[] = []
 
 		// Step 1: Initialize Secrets
 		for (const { url } of this.nodes) {
@@ -77,20 +77,18 @@ export class CommunicationService implements OnModuleInit {
 				{ owner }
 			)
 		}
-
-		// Get temporarily private instead of public
-		// TODO: should not calculate private key here. Try to research aPSS
-		// publicKeys = groupPrivateKeys ( Trick )
-		const masterPrivateKey = publicKeys.reduce((pre, current) => {
-			const prevFormat = BN.from(pre, 'hex')
-			const currentFormat = BN.from(current, 'hex')
-
-			return prevFormat.add(currentFormat).umod(EC.ORDER).toString('hex')
+		console.log(publicKeys)
+		// TODO: ISSUE: publicKeys is not an array of strings	
+		const masterPublicKey = publicKeys.reduce((pre, current) => {
+			const preX = BN.from(pre.slice(2, 66), 'hex')
+			const preY = BN.from(pre.slice(66), 'hex')
+			const currentX = BN.from(current.slice(2, 66), 'hex')
+			const currentY = BN.from(current.slice(66), 'hex')
+			const x = preX.add(currentX).toString('hex')
+			const y = preY.add(currentY).toString('hex')
+			return `04${x}${y}`
 		}, '0')
 
-		const masterPublicKey = EC.secp256k1
-			.keyFromPrivate(masterPrivateKey, 'hex')
-			.getPublic('hex')
 
 		const address = C.getAddressFromPublicKey(masterPublicKey)
 

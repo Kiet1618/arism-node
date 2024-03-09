@@ -10,7 +10,7 @@ export class SecretService {
 	constructor(
 		@InjectModel(Secret.name)
 		private secretModel: Model<SecretDocument>
-	) {}
+	) { }
 
 	async initialize(owner: string): Promise<string> {
 		const keyPair = EC.secp256k1.genKeyPair()
