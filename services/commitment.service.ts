@@ -6,19 +6,19 @@ import { Commitment, CommitmentDocument } from '@schemas'
 
 @Injectable()
 export class CommitmentService {
-	constructor(
-		@InjectModel(Commitment.name)
-		private commitmentModel: Model<CommitmentDocument>
-	) {}
+    constructor(
+        @InjectModel(Commitment.name)
+        private commitmentModel: Model<CommitmentDocument>
+    ) {}
 
-	async create(
-		createCommitmentDto: CreateCommitmentDto
-	): Promise<Commitment> {
-		const commitment = new this.commitmentModel(createCommitmentDto)
-		return commitment.save()
-	}
+    async create(
+        createCommitmentDto: CreateCommitmentDto
+    ): Promise<Commitment> {
+        const commitment = new this.commitmentModel(createCommitmentDto)
+        return commitment.save()
+    }
 
-	async findCommitment(commitment: string): Promise<Commitment> {
-		return this.commitmentModel.findOne({ commitment }).exec()
-	}
+    async findCommitment(commitment: string): Promise<Commitment> {
+        return this.commitmentModel.findOne({ commitment }).exec()
+    }
 }
