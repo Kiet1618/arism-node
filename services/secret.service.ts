@@ -26,20 +26,20 @@ export class SecretService {
 	}
 
 	async receiveShare(owner: string, receivedShare: string): Promise<void> {
-		const nodeSecret = await this.secretModel.findOne({ owner })
+		const secret = await this.secretModel.findOne({ owner })
 
-		nodeSecret.receivedShares.push(receivedShare)
-		const receivedShares = nodeSecret.receivedShares
+		secret.receivedShares.push(receivedShare)
+		const receivedShares = secret.receivedShares
 
 		await this.secretModel.updateOne({ owner }, { receivedShares })
 	}
 
 	async deriveMasterShare(owner: string): Promise<void> {
-		const nodeSecret: Secret = await this.secretModel.findOne({
+		const secret: Secret = await this.secretModel.findOne({
 			owner,
 		})
 
-		const masterShare = sumMod(nodeSecret.receivedShares, EC.ORDER)
+		const masterShare = sumMod(secret.receivedShares, EC.ORDER)
 
 		await this.secretModel.updateOne({ owner }, { masterShare })
 	}

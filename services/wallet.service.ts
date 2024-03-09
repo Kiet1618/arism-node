@@ -22,7 +22,7 @@ export class WalletService {
 		address: string,
 		publicKey: string
 	): Promise<Wallet> {
-		const newWallet = new Wallet(owner, address, publicKey)
-		return this.walletModel.create(newWallet)
+		const wallet = new Wallet(owner, address, publicKey)
+		return this.walletModel.create(wallet)
 	}
 }

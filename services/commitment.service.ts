@@ -14,8 +14,8 @@ export class CommitmentService {
 	async create(
 		createCommitmentDto: CreateCommitmentDto
 	): Promise<Commitment> {
-		const newCommitment = new this.commitmentModel(createCommitmentDto)
-		return newCommitment.save()
+		const commitment = new this.commitmentModel(createCommitmentDto)
+		return commitment.save()
 	}
 
 	async findCommitment(commitment: string): Promise<Commitment> {
