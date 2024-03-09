@@ -33,6 +33,21 @@ const nodesLocal = [
     },
 ]
 
+const nodePrivateKeys = [
+    {
+        id: 1,
+        privateKey: process.env.NODE1_PRIVATE_KEY,
+    },
+    {
+        id: 2,
+        privateKey: process.env.NODE2_PRIVATE_KEY,
+    },
+    {
+        id: 3,
+        privateKey: process.env.NODE3_PRIVATE_KEY,
+    },
+]
+
 const productionConfig = {
     url: nodesProduction.find((node) => node.id === Number(process.env.NODE_ID))
         .url,
@@ -40,7 +55,9 @@ const productionConfig = {
     database: {
         mongoUri: process.env.MONGO_URI,
     },
-    privateKey: process.env.PRIVATE_KEY,
+    privateKey: nodePrivateKeys.find(
+        (node) => node.id === Number(process.env.NODE_ID)
+    ),
     nodes: nodesProduction,
 }
 
@@ -50,7 +67,9 @@ const localConfig = {
     database: {
         mongoUri: `mongodb+srv://kiet1618:12052002@kltn.mbww3bu.mongodb.net/node${process.env.NODE_ID}?retryWrites=true&w=majority`,
     },
-    privateKey: process.env.PRIVATE_KEY,
+    privateKey: nodePrivateKeys.find(
+        (node) => node.id === Number(process.env.NODE_ID)
+    ),
     nodes: nodesLocal,
 }
 
