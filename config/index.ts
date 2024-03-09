@@ -55,9 +55,7 @@ const productionConfig = {
     database: {
         mongoUri: process.env.MONGO_URI,
     },
-    privateKey: nodePrivateKeys.find(
-        (node) => node.id === Number(process.env.NODE_ID)
-    ),
+    privateKey: process.env.PRIVATE_KEY,
     nodes: nodesProduction,
 }
 
