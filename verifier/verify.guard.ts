@@ -14,12 +14,9 @@ export class VerifyGuard implements CanActivate {
 	canActivate(
 		context: ExecutionContext
 	): boolean | Promise<boolean> | Observable<boolean> {
-		// const request = context.switchToHttp().getRequest()
-		// const { verifier, idToken, owner } = request.body
-		// if (verifier.toLowerCase() !== 'google') {
-		// 	throw new BadRequestException('NOT_SUPPORT')
-		// }
-		// return this.googleVerifier.verify(idToken, owner)
+		const request = context.switchToHttp().getRequest()
+		const { idToken, owner } = request.body
+		return this.googleVerifier.verify(idToken, owner)
 
 		return true
 	}
