@@ -7,40 +7,40 @@ import { sumMod } from '@libs/arithmetic'
 
 @Injectable()
 export class SecretService {
-	constructor(
-		@InjectModel(Secret.name)
-		private secretModel: Model<SecretDocument>
-	) { }
+    constructor(
+        @InjectModel(Secret.name)
+        private secretModel: Model<SecretDocument>
+    ) {}
 
-	async initialize(owner: string): Promise<string> {
-		const keyPair = EC.secp256k1.genKeyPair()
-		const secret = keyPair.getPrivate('hex')
+    async initialize(owner: string): Promise<string> {
+        const keyPair = EC.secp256k1.genKeyPair()
+        const secret = keyPair.getPrivate('hex')
 
-		await this.secretModel.create({ secret, owner })
+        await this.secretModel.create({ secret, owner })
 
-		return secret
-	}
+        return secret
+    }
 
-	async find(owner: string): Promise<Secret> {
-		return this.secretModel.findOne({ owner })
-	}
+    async find(owner: string): Promise<Secret> {
+        return this.secretModel.findOne({ owner })
+    }
 
-	async receiveShare(owner: string, receivedShare: string): Promise<void> {
-		const secret = await this.secretModel.findOne({ owner })
+    async receiveShare(owner: string, receivedShare: string): Promise<void> {
+        const secret = await this.secretModel.findOne({ owner })
 
-		secret.receivedShares.push(receivedShare)
-		const receivedShares = secret.receivedShares
+        secret.receivedShares.push(receivedShare)
+        const receivedShares = secret.receivedShares
 
-		await this.secretModel.updateOne({ owner }, { receivedShares })
-	}
+        await this.secretModel.updateOne({ owner }, { receivedShares })
+    }
 
-	async deriveMasterShare(owner: string): Promise<void> {
-		const secret: Secret = await this.secretModel.findOne({
-			owner,
-		})
+    async deriveMasterShare(owner: string): Promise<void> {
+        const secret: Secret = await this.secretModel.findOne({
+            owner,
+        })
 
-		const masterShare = sumMod(secret.receivedShares, EC.ORDER)
+        const masterShare = sumMod(secret.receivedShares, EC.ORDER)
 
-		await this.secretModel.updateOne({ owner }, { masterShare })
-	}
+        await this.secretModel.updateOne({ owner }, { masterShare })
+    }
 }
