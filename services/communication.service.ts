@@ -47,7 +47,7 @@ export class CommunicationService implements OnModuleInit {
 	}
 
 	async generateSharedSecret(owner: string): Promise<Wallet> {
-		const publicKeys: any[] = []
+		const publicKeys: string[] = []
 
 		// Step 1: Initialize Secrets
 		for (const { url } of this.nodes) {
@@ -77,17 +77,12 @@ export class CommunicationService implements OnModuleInit {
 				{ owner }
 			)
 		}
-		console.log(publicKeys)
-		// TODO: ISSUE: publicKeys is not an array of strings	
-		const masterPublicKey = publicKeys.reduce((pre, current) => {
-			const preX = BN.from(pre.slice(2, 66), 'hex')
-			const preY = BN.from(pre.slice(66), 'hex')
-			const currentX = BN.from(current.slice(2, 66), 'hex')
-			const currentY = BN.from(current.slice(66), 'hex')
-			const x = preX.add(currentX).toString('hex')
-			const y = preY.add(currentY).toString('hex')
-			return `04${x}${y}`
-		}, '0')
+
+		let masterPublicKey = publicKeys[0];
+		for (let i = 1; i < publicKeys.length; i++) {
+			masterPublicKey = EC.decodePub(masterPublicKey).add(EC.decodePub(publicKeys[i])).encode('hex', false)
+
+		}
 
 
 		const address = C.getAddressFromPublicKey(masterPublicKey)
