@@ -13,7 +13,7 @@ export class CommitmentController {
 
 	@Post()
 	async createCommitment(
-		@Body() createCommitmentDto: CreateCommitmentDto
+        @Body() createCommitmentDto: CreateCommitmentDto
 	): Promise<CommitmentDto> {
 		const { commitment, tempPublicKey } = createCommitmentDto
 
