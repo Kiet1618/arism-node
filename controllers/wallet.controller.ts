@@ -8,19 +8,19 @@ export class WalletController {
 	constructor(
 		private readonly walletService: WalletService,
 		private readonly communicationService: CommunicationService
-	) { }
+	) {}
 
 	@Post()
-	async lookupWallet(@Body() data: { owner: string }): Promise<Wallet> {
+	async store(@Body() data: { owner: string }): Promise<Wallet> {
 		const existedWallet = await this.walletService.find(data.owner)
 		if (existedWallet) {
 			return existedWallet
 		}
 
-		const { publicKey, address } =
+		const { address, publicKey } =
 			await this.communicationService.generateSharedSecret(data.owner)
 
-		return this.walletService.create(data.owner, publicKey, address)
+		return this.walletService.create(data.owner, address, publicKey)
 	}
 
 	@Get()

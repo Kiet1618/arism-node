@@ -69,7 +69,7 @@ export class SecretController {
 		return {
 			publicKey: wallet.publicKey,
 			threshold: 1,
-			masterShare: ciphertext.toString('hex'),
+			ciphertext: ciphertext.toString('hex'),
 			metadata: {
 				mac: mac.toString('hex'),
 				iv: iv.toString('hex'),

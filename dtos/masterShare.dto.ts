@@ -1,7 +1,7 @@
 export class MasterShareDto {
 	readonly threshold: number
 
-	readonly masterShare: string
+	readonly ciphertext: string
 
 	readonly metadata: {
 		iv: string
