@@ -59,4 +59,4 @@ jobs:
           app-name: 'arism-node2'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D4911707E2E349BAA7019433D776CD7B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_453A050EA246404C9A19D32D616E9167 }}
