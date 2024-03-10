@@ -5,20 +5,20 @@ export type WalletDocument = HydratedDocument<Wallet>
 
 @Schema({ timestamps: true })
 export class Wallet {
-	@Prop({ required: true, lowercase: true, trim: true })
-	owner: string
+    @Prop({ required: true, lowercase: true, trim: true })
+    user: string
 
-	@Prop()
-	address: string
+    @Prop()
+    address: string
 
-	@Prop()
-	publicKey: string
+    @Prop()
+    publicKey: string
 
-	constructor(owner: string, address: string, publicKey: string) {
-		this.owner = owner
-		this.address = address
-		this.publicKey = publicKey
-	}
+    constructor(user: string, address: string, publicKey: string) {
+        this.user = user
+        this.address = address
+        this.publicKey = publicKey
+    }
 }
 
 export const WalletSchema = SchemaFactory.createForClass(Wallet)

@@ -17,9 +17,9 @@ export class CommunicationController {
     ) {}
 
     @Post('initialize-secret')
-    async initializeSecret(@Body() data: { owner: string }): Promise<any> {
+    async initializeSecret(@Body() data: { user: string }): Promise<any> {
         try {
-            const secret = await this.secretService.initialize(data.owner)
+            const secret = await this.secretService.initialize(data.user)
             const keyPair = EC.secp256k1.keyFromPrivate(secret)
             const publicKey = keyPair.getPublic().encode('hex', false)
             return publicKey
@@ -32,9 +32,9 @@ export class CommunicationController {
     }
 
     @Post('generate-shares')
-    async generateShares(@Body() data: { owner: string }): Promise<void> {
+    async generateShares(@Body() data: { user: string }): Promise<void> {
         try {
-            await this.communicationService.generateShares(data.owner)
+            await this.communicationService.generateShares(data.user)
         } catch (error) {
             console.error(error.message)
             throw new InternalServerErrorException(
@@ -46,10 +46,7 @@ export class CommunicationController {
     @Post('receive-share')
     async receiveShare(@Body() data: ReceiveShareDto): Promise<void> {
         try {
-            await this.secretService.receiveShare(
-                data.owner,
-                data.receivedShare
-            )
+            await this.secretService.receiveShare(data.user, data.receivedShare)
         } catch (error) {
             console.error(error.message)
             throw new InternalServerErrorException(
@@ -59,9 +56,9 @@ export class CommunicationController {
     }
 
     @Post('derive-master-share')
-    async deriveMasterShare(@Body() data: { owner: string }): Promise<void> {
+    async deriveMasterShare(@Body() data: { user: string }): Promise<void> {
         try {
-            await this.secretService.deriveMasterShare(data.owner)
+            await this.secretService.deriveMasterShare(data.user)
         } catch (error) {
             console.error(error.message)
             throw new InternalServerErrorException(
@@ -74,7 +71,7 @@ export class CommunicationController {
     async createWallet(@Body() data: CreateWalletDto): Promise<void> {
         try {
             await this.walletService.create(
-                data.owner,
+                data.user,
                 data.publicKey,
                 data.address
             )

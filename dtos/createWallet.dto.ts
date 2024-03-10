@@ -1,7 +1,7 @@
 export class CreateWalletDto {
-	readonly owner: string
+    readonly user: string
 
-	readonly address: string
+    readonly address: string
 
-	readonly publicKey: string
+    readonly publicKey: string
 }

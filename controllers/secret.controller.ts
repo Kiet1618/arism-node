@@ -25,7 +25,7 @@ export class SecretController {
     async findMasterShare(
         @Body() data: FindMasterShareDto
     ): Promise<MasterShareDto> {
-        const { idToken, tempPublicKey, commitments, owner } = data
+        const { idToken, tempPublicKey, commitments, user } = data
 
         const hashedIdToken = H.keccak256(idToken)
         const existedCommitment =
@@ -36,7 +36,7 @@ export class SecretController {
             )
         }
 
-        const wallet = await this.walletService.find(owner)
+        const wallet = await this.walletService.find(user)
         if (!wallet) {
             throw new BadRequestException('Wallet have not init yet.')
         }
@@ -54,9 +54,9 @@ export class SecretController {
             )
         }
 
-        const secret = await this.secretService.find(owner)
+        const secret = await this.secretService.find(user)
         if (!secret) {
-            throw new BadRequestException('Not found secret by owner')
+            throw new BadRequestException('Not found secret by user')
         }
 
         const { masterShare } = secret
