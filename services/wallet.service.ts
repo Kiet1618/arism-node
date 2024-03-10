@@ -9,10 +9,6 @@ export class WalletService {
         @InjectModel(Wallet.name) private walletModel: Model<WalletDocument>
     ) {}
 
-    async findAll(): Promise<Wallet[]> {
-        return this.walletModel.find().exec()
-    }
-
     async find(user: string): Promise<Wallet> {
         return this.walletModel.findOne({ user }).exec()
     }
@@ -22,7 +18,6 @@ export class WalletService {
         address: string,
         publicKey: string
     ): Promise<Wallet> {
-        const wallet = new Wallet(user, address, publicKey)
-        return this.walletModel.create(wallet)
+        return this.walletModel.create({ user, address, publicKey })
     }
 }

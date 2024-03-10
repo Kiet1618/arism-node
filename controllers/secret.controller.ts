@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { VerifyGuard } from '@verifiers/verify.guard'
-import { FindMasterShareDto, MasterShareDto } from '@dtos'
+import { ConstructMasterShareDto, MasterShareDto } from '@dtos'
 import { CommitmentService, SecretService, WalletService } from '@services'
 import { C, EC, H } from '@common'
 
@@ -22,14 +22,15 @@ export class SecretController {
 
     @Post()
     @UseGuards(VerifyGuard)
-    async findMasterShare(
-        @Body() data: FindMasterShareDto
+    async constructMasterShare(
+        @Body() data: ConstructMasterShareDto
     ): Promise<MasterShareDto> {
         const { idToken, tempPublicKey, commitments, user } = data
 
         const hashedIdToken = H.keccak256(idToken)
         const existedCommitment =
-            await this.commitmentService.findCommitment(hashedIdToken)
+            await this.commitmentService.find(hashedIdToken)
+
         if (!existedCommitment) {
             throw new BadRequestException(
                 "Commitment of Id Token doesn't exist."
@@ -41,8 +42,8 @@ export class SecretController {
             throw new BadRequestException('Wallet have not init yet.')
         }
 
-        const nodePrivateKey = this.configService.get<string>('privateKey')
-        const keyPair = EC.secp256k1.keyFromPrivate(nodePrivateKey)
+        const privateKey = this.configService.get<string>('privateKey')
+        const keyPair = EC.secp256k1.keyFromPrivate(privateKey)
         const publicKey = keyPair.getPublic('hex')
 
         const commitment = commitments.find(

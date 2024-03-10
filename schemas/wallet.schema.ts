@@ -13,12 +13,6 @@ export class Wallet {
 
     @Prop()
     publicKey: string
-
-    constructor(user: string, address: string, publicKey: string) {
-        this.user = user
-        this.address = address
-        this.publicKey = publicKey
-    }
 }
 
 export const WalletSchema = SchemaFactory.createForClass(Wallet)
