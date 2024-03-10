@@ -9,7 +9,6 @@
         "build": "nest build",
         "format": "prettier --write \"./**/*.ts\" \"test/**/*.ts\"",
         "start": "node dist/main",
-        "start:dev": "nest start --watch",
         "start:dev:node1": "export NODE_ID=1 && nest start --watch",
         "start:dev:node2": "export NODE_ID=2 && nest start --watch",
         "start:dev:node3": "export NODE_ID=3 && nest start --watch",
