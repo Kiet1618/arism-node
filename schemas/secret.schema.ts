@@ -5,17 +5,17 @@ export type SecretDocument = HydratedDocument<Secret>
 
 @Schema({ timestamps: true })
 export class Secret {
-	@Prop({ required: true, lowercase: true, trim: true })
-	owner: string
+    @Prop({ required: true, lowercase: true, trim: true })
+    user: string
 
-	@Prop()
-	secret: string
+    @Prop()
+    secret: string
 
-	@Prop()
-	receivedShares: string[]
+    @Prop()
+    receivedShares: string[]
 
-	@Prop()
-	masterShare: string
+    @Prop()
+    masterShare: string
 }
 
 export const SecretSchema = SchemaFactory.createForClass(Secret)

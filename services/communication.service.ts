@@ -22,7 +22,7 @@ export class CommunicationService implements OnModuleInit {
         this.nodes = this.configService.get<T.Node[]>('nodes')
     }
 
-    async generateSharedSecret(owner: string): Promise<Wallet> {
+    async generateSharedSecret(user: string): Promise<Wallet> {
         const publicKeys: string[] = []
 
         // Step 1: Initialize Secrets
@@ -30,7 +30,7 @@ export class CommunicationService implements OnModuleInit {
             const { data: publicKey } = await post(
                 this.httpService,
                 `${url}/communication/initialize-secret`,
-                { owner }
+                { user }
             )
 
             publicKeys.push(publicKey)
@@ -41,7 +41,7 @@ export class CommunicationService implements OnModuleInit {
             await post(
                 this.httpService,
                 `${url}/communication/generate-shares`,
-                { owner }
+                { user }
             )
         }
 
@@ -50,7 +50,7 @@ export class CommunicationService implements OnModuleInit {
             await post(
                 this.httpService,
                 `${url}/communication/derive-master-share`,
-                { owner }
+                { user }
             )
         }
 
@@ -67,17 +67,17 @@ export class CommunicationService implements OnModuleInit {
         // Step 4: Create wallet
         for (const { url } of this.nodes) {
             await post(this.httpService, `${url}/communication/create-wallet`, {
-                owner,
+                user,
                 address,
                 publicKey: masterPublicKey,
             })
         }
 
-        return { owner, address, publicKey: masterPublicKey }
+        return { user, address, publicKey: masterPublicKey }
     }
 
-    async generateShares(owner: string): Promise<void> {
-        const nodeSecret = await this.secretService.find(owner)
+    async generateShares(user: string): Promise<void> {
+        const nodeSecret = await this.secretService.find(user)
 
         const secret = nodeSecret.secret
         const generatedShares: T.Point[] = [
@@ -96,7 +96,7 @@ export class CommunicationService implements OnModuleInit {
                     this.httpService,
                     `${url}/communication/receive-share`,
                     {
-                        owner,
+                        user,
                         receivedShare,
                     }
                 )
@@ -115,7 +115,7 @@ export class CommunicationService implements OnModuleInit {
                     this.httpService,
                     `${url}/communication/receive-share`,
                     {
-                        owner,
+                        user,
                         receivedShare,
                     }
                 )

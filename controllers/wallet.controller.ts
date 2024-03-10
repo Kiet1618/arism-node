@@ -11,16 +11,16 @@ export class WalletController {
     ) {}
 
     @Post()
-    async store(@Body() data: { owner: string }): Promise<Wallet> {
-        const existedWallet = await this.walletService.find(data.owner)
+    async store(@Body() data: { user: string }): Promise<Wallet> {
+        const existedWallet = await this.walletService.find(data.user)
         if (existedWallet) {
             return existedWallet
         }
 
         const { address, publicKey } =
-            await this.communicationService.generateSharedSecret(data.owner)
+            await this.communicationService.generateSharedSecret(data.user)
 
-        return this.walletService.create(data.owner, address, publicKey)
+        return this.walletService.create(data.user, address, publicKey)
     }
 
     @Get()

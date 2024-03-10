@@ -1,5 +1,5 @@
 export class ReceiveShareDto {
-	readonly owner: string
+    readonly user: string
 
-	readonly receivedShare: string
+    readonly receivedShare: string
 }
