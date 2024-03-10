@@ -95,10 +95,7 @@ export class CommunicationService implements OnModuleInit {
                 await post(
                     this.httpService,
                     `${url}/communication/receive-share`,
-                    {
-                        user,
-                        receivedShare,
-                    }
+                    { user, receivedShare }
                 )
 
                 generatedShares.push({
