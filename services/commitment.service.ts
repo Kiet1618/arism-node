@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { CreateCommitmentDto } from '@dtos'
 import { Commitment, CommitmentDocument } from '@schemas'
 
 @Injectable()
@@ -12,13 +11,13 @@ export class CommitmentService {
     ) {}
 
     async create(
-        createCommitmentDto: CreateCommitmentDto
+        commitment: string,
+        tempPublicKey: string
     ): Promise<Commitment> {
-        const commitment = new this.commitmentModel(createCommitmentDto)
-        return commitment.save()
+        return await this.commitmentModel.create({ commitment, tempPublicKey })
     }
 
-    async findCommitment(commitment: string): Promise<Commitment> {
+    async find(commitment: string): Promise<Commitment> {
         return this.commitmentModel.findOne({ commitment }).exec()
     }
 }

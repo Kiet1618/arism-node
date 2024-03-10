@@ -72,8 +72,8 @@ export class CommunicationController {
         try {
             await this.walletService.create(
                 data.user,
-                data.publicKey,
-                data.address
+                data.address,
+                data.publicKey
             )
         } catch (error) {
             console.error(error.message)

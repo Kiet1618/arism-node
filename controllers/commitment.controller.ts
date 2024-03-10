@@ -17,14 +17,13 @@ export class CommitmentController {
     ): Promise<CommitmentDto> {
         const { commitment, tempPublicKey } = data
 
-        const existedCommitment =
-            await this.commitmentService.findCommitment(commitment)
+        const existedCommitment = await this.commitmentService.find(commitment)
 
         if (existedCommitment) {
             throw new BadRequestException('Commitment already exists')
         }
 
-        await this.commitmentService.create(data)
+        await this.commitmentService.create(commitment, tempPublicKey)
 
         const privateKey = this.configService.get<string>('privateKey')
         const keyPair = EC.secp256k1.keyFromPrivate(privateKey)

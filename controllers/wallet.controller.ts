@@ -1,5 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
-import { VerifyGuard } from '@verifiers/verify.guard'
+import { Body, Controller, Post } from '@nestjs/common'
 import { Wallet } from '@schemas'
 import { CommunicationService, WalletService } from '@services'
 
@@ -11,21 +10,14 @@ export class WalletController {
     ) {}
 
     @Post()
-    async store(@Body() data: { user: string }): Promise<Wallet> {
+    async create(@Body() data: { user: string }): Promise<Wallet> {
         const existedWallet = await this.walletService.find(data.user)
-        if (existedWallet) {
-            return existedWallet
-        }
+
+        if (existedWallet) return existedWallet
 
         const { address, publicKey } =
             await this.communicationService.generateSharedSecret(data.user)
 
         return this.walletService.create(data.user, address, publicKey)
-    }
-
-    @Get()
-    @UseGuards(VerifyGuard)
-    async findAll(): Promise<Wallet[]> {
-        return this.walletService.findAll()
     }
 }

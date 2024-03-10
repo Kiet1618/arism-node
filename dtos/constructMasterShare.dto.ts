@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator'
 import { CommitmentDto } from '@dtos'
 
-export class FindMasterShareDto {
+export class ConstructMasterShareDto {
     @IsNotEmpty()
     readonly user: string
 
