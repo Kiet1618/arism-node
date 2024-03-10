@@ -35,7 +35,7 @@ const nodePrivateKeys = [
 
 const productionConfig = {
     url: nodes.find((node) => node.id === Number(process.env.NODE_ID)).url,
-    port: 3000,
+    port: process.env.PORT,
     database: {
         mongoUri: process.env.MONGO_URI,
     },
