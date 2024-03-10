@@ -51,7 +51,7 @@ const localConfig = {
     },
     privateKey: nodePrivateKeys.find(
         (node) => node.id === Number(process.env.NODE_ID)
-    ),
+    ).privateKey,
     nodes: nodes,
 }
 
