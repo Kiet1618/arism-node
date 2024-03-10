@@ -6,34 +6,34 @@ import { EC } from '@common'
 
 @Controller('commitment')
 export class CommitmentController {
-	constructor(
-		private readonly commitmentService: CommitmentService,
-		private configService: ConfigService
-	) {}
+    constructor(
+        private readonly commitmentService: CommitmentService,
+        private configService: ConfigService
+    ) {}
 
-	@Post()
-	async createCommitment(
-        @Body() createCommitmentDto: CreateCommitmentDto
-	): Promise<CommitmentDto> {
-		const { commitment, tempPublicKey } = createCommitmentDto
+    @Post()
+    async createCommitment(
+        @Body() data: CreateCommitmentDto
+    ): Promise<CommitmentDto> {
+        const { commitment, tempPublicKey } = data
 
-		let existedCommitment =
-			await this.commitmentService.findCommitment(commitment)
+        const existedCommitment =
+            await this.commitmentService.findCommitment(commitment)
 
-		if (existedCommitment) {
-			throw new BadRequestException('Commitment already exists')
-		}
+        if (existedCommitment) {
+            throw new BadRequestException('Commitment already exists')
+        }
 
-		await this.commitmentService.create(createCommitmentDto)
+        await this.commitmentService.create(data)
 
-		const privateKey = this.configService.get<string>('privateKey')
-		const keyPair = EC.secp256k1.keyFromPrivate(privateKey)
-		const publicKey = keyPair.getPublic('hex')
+        const privateKey = this.configService.get<string>('privateKey')
+        const keyPair = EC.secp256k1.keyFromPrivate(privateKey)
+        const publicKey = keyPair.getPublic('hex')
 
-		const signature = keyPair
-			.sign(commitment + ',' + tempPublicKey)
-			.toDER('hex')
+        const signature = keyPair
+            .sign(commitment + ',' + tempPublicKey)
+            .toDER('hex')
 
-		return { signature, publicKey }
-	}
+        return { signature, publicKey }
+    }
 }

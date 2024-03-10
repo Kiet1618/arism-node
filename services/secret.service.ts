@@ -12,35 +12,35 @@ export class SecretService {
         private secretModel: Model<SecretDocument>
     ) {}
 
-    async initialize(owner: string): Promise<string> {
+    async initialize(user: string): Promise<string> {
         const keyPair = EC.secp256k1.genKeyPair()
         const secret = keyPair.getPrivate('hex')
 
-        await this.secretModel.create({ secret, owner })
+        await this.secretModel.create({ secret, user })
 
         return secret
     }
 
-    async find(owner: string): Promise<Secret> {
-        return this.secretModel.findOne({ owner })
+    async find(user: string): Promise<Secret> {
+        return this.secretModel.findOne({ user })
     }
 
-    async receiveShare(owner: string, receivedShare: string): Promise<void> {
-        const secret = await this.secretModel.findOne({ owner })
+    async receiveShare(user: string, receivedShare: string): Promise<void> {
+        const secret = await this.secretModel.findOne({ user })
 
         secret.receivedShares.push(receivedShare)
         const receivedShares = secret.receivedShares
 
-        await this.secretModel.updateOne({ owner }, { receivedShares })
+        await this.secretModel.updateOne({ user }, { receivedShares })
     }
 
-    async deriveMasterShare(owner: string): Promise<void> {
+    async deriveMasterShare(user: string): Promise<void> {
         const secret: Secret = await this.secretModel.findOne({
-            owner,
+            user,
         })
 
         const masterShare = sumMod(secret.receivedShares, EC.ORDER)
 
-        await this.secretModel.updateOne({ owner }, { masterShare })
+        await this.secretModel.updateOne({ user }, { masterShare })
     }
 }

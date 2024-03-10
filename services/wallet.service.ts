@@ -13,16 +13,16 @@ export class WalletService {
         return this.walletModel.find().exec()
     }
 
-    async find(owner: string): Promise<Wallet> {
-        return this.walletModel.findOne({ owner }).exec()
+    async find(user: string): Promise<Wallet> {
+        return this.walletModel.findOne({ user }).exec()
     }
 
     async create(
-        owner: string,
+        user: string,
         address: string,
         publicKey: string
     ): Promise<Wallet> {
-        const wallet = new Wallet(owner, address, publicKey)
+        const wallet = new Wallet(user, address, publicKey)
         return this.walletModel.create(wallet)
     }
 }
